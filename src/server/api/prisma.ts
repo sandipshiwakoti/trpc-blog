@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { env } from "~/env.mjs";
 
 const prismaGlobal = global as typeof global & {
   prisma?: PrismaClient;
@@ -8,11 +9,9 @@ export const prisma: PrismaClient =
   prismaGlobal.prisma ||
   new PrismaClient({
     log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
 
-if (process.env.NODE_ENV !== "production") {
+if (env.NODE_ENV !== "production") {
   prismaGlobal.prisma = prisma;
 }

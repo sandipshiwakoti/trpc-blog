@@ -4,12 +4,10 @@ import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type inferReactQueryProcedureOptions } from "@trpc/react-query";
 
 import { type AppRouter } from "~/server/api/root";
+import { env } from "~/env.mjs";
 
 export const api = createTRPCNext<AppRouter>({
   config() {
-    const baseUrl = process.env.BASE_URL ?? "http://localhost";
-    const port = process.env.PORT ?? 3000;
-
     return {
       links: [
         loggerLink({
@@ -18,7 +16,7 @@ export const api = createTRPCNext<AppRouter>({
             (opts.direction === "down" && opts.result instanceof Error),
         }),
         httpBatchLink({
-          url: `${baseUrl}:${port}/api/trpc`,
+          url: `${env.NEXT_PUBLIC_BASE_URL}:${env.NEXT_PUBLIC_PORT}/api/trpc`,
           headers() {
             return {
               Authorization: localStorage.getItem("@token") ?? "",

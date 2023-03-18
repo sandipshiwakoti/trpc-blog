@@ -1,9 +1,10 @@
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import JWT from "jsonwebtoken";
+import { env } from "~/env.mjs";
 
 const getUserFromToken = (token: string) => {
-  const jwtSecret = process.env.JWT_SECRET || "";
+  const jwtSecret = env.JWT_SECRET;
   const user = JWT.verify(token, jwtSecret) as {
     id: string;
     email: string;

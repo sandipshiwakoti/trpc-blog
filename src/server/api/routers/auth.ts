@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "~/server/api/prisma";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { env } from "~/env.mjs";
 
 export const authRouter = createTRPCRouter({
   login: publicProcedure
@@ -38,7 +39,7 @@ export const authRouter = createTRPCRouter({
 
       const accessToken = JWT.sign(
         { id: user.id, email: user.email },
-        process.env.JWT_SECRET || "",
+        env.JWT_SECRET,
         {
           expiresIn: "1d",
         }
