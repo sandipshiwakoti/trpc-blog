@@ -4,7 +4,12 @@ import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type inferReactQueryProcedureOptions } from "@trpc/react-query";
 
 import { type AppRouter } from "~/server/api/root";
-import { env } from "~/env.mjs";
+
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") return ""; // browser should use relative url
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
+  return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
+};
 
 export const api = createTRPCNext<AppRouter>({
   config() {
@@ -16,7 +21,7 @@ export const api = createTRPCNext<AppRouter>({
             (opts.direction === "down" && opts.result instanceof Error),
         }),
         httpBatchLink({
-          url: `${env.NEXT_PUBLIC_BASE_URL}:${env.NEXT_PUBLIC_PORT}/api/trpc`,
+          url: `${getBaseUrl()}/api/trpc`,
           headers() {
             return {
               Authorization: localStorage.getItem("@token") ?? "",
